@@ -1,0 +1,76 @@
+#1.	Define the Observer Interface:
+interface Observer {
+    void update(String message);
+}
+#2.	Create Concrete Observer Classes:
+class Subscriber implements Observer {
+    private String name;
+
+    public Subscriber(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void update(String message) {
+        System.out.println(name + " received message: " + message);
+    }
+}
+#3.	Define the Subject Interface:
+interface Subject {
+    void registerObserver(Observer observer);
+    void removeObserver(Observer observer);
+    void notifyObservers();
+}
+
+#4.	Create Concrete Subject Class:
+import java.util.ArrayList;
+import java.util.List;
+
+class Newsletter implements Subject {
+    private List<Observer> observers;
+    private String message;
+
+    public Newsletter() {
+        this.observers = new ArrayList<>();
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
+
+    public void newEdition(String message) {
+        this.message = message;
+        notifyObservers();
+    }
+}
+#5.	Using the Observer Pattern:
+public class ObserverPatternDemo {
+    public static void main(String[] args) {
+        Newsletter newsletter = new Newsletter();
+
+        Observer subscriber1 = new Subscriber("Alice");
+        Observer subscriber2 = new Subscriber("Bob");
+
+        newsletter.registerObserver(subscriber1);
+        newsletter.registerObserver(subscriber2);
+
+        newsletter.newEdition("July Newsletter");
+
+        newsletter.removeObserver(subscriber1);
+
+        newsletter.newEdition("August Newsletter");
+    }
+}
